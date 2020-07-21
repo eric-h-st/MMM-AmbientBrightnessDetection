@@ -1,0 +1,25 @@
+{
+  "name": "Magic-Mirror-Module-Ambient-Lights",
+  "version": "1.0.0",
+  "description": "Ambient lights detection module for the Magic Mirror.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eric-h-st/MMM-AmbientLights"
+  },
+  "keywords": [
+    "magic mirror",
+    "smart mirror",
+    "Ambient Lights",
+    "module",
+    "ambient",
+    "camera"
+  ],
+  "author": "Eric H.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eric-h-st/MMM-AmbientLights/issues"
+  },
+  "dependencies": {
+    "opencv": "latest"
+  }
+}
