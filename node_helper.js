@@ -67,7 +67,7 @@ module.exports = NodeHelper.create({
 	},
 
 	snapshot: function() {
-		self.log("Capturing: " + self.name + ".jpg");
+		self.log("Capturing an image for brightness detection...");
 
         self.camera.capture(self.name, (err, data) => {
 			if (!err) {

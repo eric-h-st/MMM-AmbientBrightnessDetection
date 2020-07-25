@@ -15,6 +15,7 @@ Module.register('MMM-AmbientBrightnessDetection',{
   	},
 	imageWrapper : null,
 	canvasWrapper: null,
+	ctx: null,
 	brightness: -1,
 
   	// Override socket notification handler.
@@ -32,9 +33,8 @@ Module.register('MMM-AmbientBrightnessDetection',{
 	},
 
 	calculateBrightness: function(e) {
-		var ctx = self.canvasWrapper.getContext('2d');
-		ctx.drawImage(self.imageWrapper, 0, 0);
-		var imageData = ctx.getImageData(0, 0, self.canvasWrapper.width, self.canvasWrapper.height);
+		self.ctx.drawImage(self.imageWrapper, 0, 0);
+		var imageData = self.ctx.getImageData(0, 0, self.canvasWrapper.width, self.canvasWrapper.height);
 		var data = imageData.data;
 		var i, len, r,g,b, colorSum = 0;
 
@@ -66,6 +66,8 @@ Module.register('MMM-AmbientBrightnessDetection',{
 
 		this.canvasWrapper.width = this.config.captureWidth;
 		this.canvasWrapper.height = this.config.captureHeight;
+
+		this.ctx = self.canvasWrapper.getContext('2d');
 
 		this.imageWrapper.addEventListener('load', this.calculateBrightness);
 
