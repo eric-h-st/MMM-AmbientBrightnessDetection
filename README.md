@@ -79,11 +79,24 @@ The following properties can be configured:
 			<td><code>autoBrightnessFactorViaRemoteControl</code></td>
 			<td>Factor to add to the edge values when setting the brightness via <b>MMM-RemoteControl</b>
 				<br>The factor is added when the calculated automatic brightness is either very high or very low, in order to avoid screen blanking at close-to-dark environments, or screen too bright in very bright environments. 
-				<br><b>Possible values:</b> <code>0 > int < 100</code> or <code>null</code> for no factor
+				<br><b>Possible values:</b> <code>1 >= int <= 100</code> or <code>null</code> for no factor
 				<br><b>Default value:</b> <code>null</code>
 			</td>
 		</tr>
-		
+		<tr>
+			<td><code>autoBrightnessMinValueViaRemoteControl</code></td>
+			<td>Minimum value to for brightness when setting via <b>MMM-RemoteControl</b>
+				<br><b>Possible values:</b> <code>10 > int < 200</code> or <code>null</code> for none
+				<br><b>Default value:</b> <code>null</code>
+			</td>
+		</tr>
+		<tr>
+			<td><code>autoBrightnessMaxValueViaRemoteControl</code></td>
+			<td>Maximum value to for brightness when setting via <b>MMM-RemoteControl</b>
+				<br><b>Possible values:</b> <code>10 > int < 200</code> or <code>null</code> for none
+				<br><b>Default value:</b> <code>30</code>
+			</td>
+		</tr>		
   </tbody>
 </table>
 
