@@ -3,7 +3,14 @@ Extension for the [MagicMirror](https://github.com/MichMich/MagicMirror).
 Monitors the room's ambient brightness by sampling images from the attached Webcam and calculating the brightness in the image. 
 As of now, this has been tested with a Logitech webcam, but should work with any PI compatibale webcam.
 
-Up next: support the PI-Camera module. 
+Up next:
+
+**Next to be added:** 
+
+* Configurable factor to be added to the brightness level sent to MMM-RemoteControl, to make the brightness range more visible in extreme light/dark cases. 
+* CEC support to change the actual brightness of the monitor, if supported.
+* PI camera module support
+
 
 ## Installation
 ````
