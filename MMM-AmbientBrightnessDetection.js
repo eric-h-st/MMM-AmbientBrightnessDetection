@@ -53,14 +53,14 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		self.sendNotification("AMBIENT_BRIGHTNESS_DETECTED", self.brightness);
 
 		if (self.config.autoSetBrightnessViaRemoteControl) {
-			var autoBrightnessViaRemoteControl = self.brightness * 200 / 100;
+			var autoBrightnessViaRemoteControl = self.brightness * 190 / 100;
 			if (self.config.autoBrightnessFactorViaRemoteControl && self.config.autoBrightnessFactorViaRemoteControl > 0 && self.config.autoBrightnessFactorViaRemoteControl <= 100) {
-				if (autoBrightnessViaRemoteControl < 50)
+				if (autoBrightnessViaRemoteControl < 40)
 					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl + autoBrightnessViaRemoteControl * self.config.autoBrightnessFactorViaRemoteControl / 100;
-				else if (autoBrightnessViaRemoteControl > 150)
-					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl - (200-autoBrightnessViaRemoteControl) * self.config.autoBrightnessFactorViaRemoteControl / 100;
+				else if (autoBrightnessViaRemoteControl > 160)
+					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl - (190-autoBrightnessViaRemoteControl) * self.config.autoBrightnessFactorViaRemoteControl / 100;
 			}
-			self.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: autoBrightnessViaRemoteControl });
+			self.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: 10 + autoBrightnessViaRemoteControl });
 		}
 	},
 
