@@ -12,7 +12,9 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		captureHeight: 480,
 		captureIntervalSeconds: 60,
 		autoSetBrightnessViaRemoteControl: true,
-		autoBrightnessFactorViaRemoteControl: null
+		autoBrightnessLowerFactorViaRemoteControl: null,
+		autoBrightnessMinValueViaRemoteControl: 30,
+		autoBrightnessMaxValueViaRemoteControl: null
   	},
 	imageWrapper : null,
 	canvasWrapper: null,
@@ -46,8 +48,7 @@ Module.register('MMM-AmbientBrightnessDetection',{
 
 			colorSum += (r + g + b) / 3;
 		}
-		var newBrightness = Math.floor(colorSum / (self.canvasWrapper.width * self.canvasWrapper.height) / 256 * 100);
-		self.brightness = newBrightness;
+		self.brightness = Math.floor(colorSum / (self.canvasWrapper.width * self.canvasWrapper.height) / 256 * 100);
 		Log.info("Brightness detected at: " + self.brightness + "%");
 
 		self.sendNotification("AMBIENT_BRIGHTNESS_DETECTED", self.brightness);
@@ -60,6 +61,10 @@ Module.register('MMM-AmbientBrightnessDetection',{
 				else if (autoBrightnessViaRemoteControl > 160)
 					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl - (190-autoBrightnessViaRemoteControl) * self.config.autoBrightnessFactorViaRemoteControl / 100;
 			}
+			if (self.config.autoBrightnessMinValueViaRemoteControl)
+				autoBrightnessViaRemoteControl = Math.max(self.config.autoBrightnessMinValueViaRemoteControl, autoBrightnessViaRemoteControl);
+			if (self.config.autoBrightnessMaxValueViaRemoteControl)
+				autoBrightnessViaRemoteControl = Math.min(self.config.autoBrightnessMaxValueViaRemoteControl, autoBrightnessViaRemoteControl);
 			self.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: 10 + autoBrightnessViaRemoteControl });
 		}
 	},
@@ -67,6 +72,9 @@ Module.register('MMM-AmbientBrightnessDetection',{
 	start: function () {
 		Log.info("Starting module: " + this.name);
 		self = this;
+		if (self.config.autoBrightnessMinValueViaRemoteControl && self.config.autoBrightnessMaxValueViaRemoteControl && self.config.autoBrightnessMinValueViaRemoteControl > self.config.autoBrightnessMaxValueViaRemoteControl)
+			self.config.autoBrightnessMinValueViaRemoteControl = self.config.autoBrightnessMaxValueViaRemoteControl = null;
+
 		this.imageWrapper = document.createElement("img");
 		this.canvasWrapper = document.createElement("canvas");
 
