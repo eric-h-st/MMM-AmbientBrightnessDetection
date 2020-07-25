@@ -31,10 +31,6 @@ Module.register('MMM-AmbientBrightnessDetection',{
 	notificationReceived: function (notification, payload) {
 	},
 
-	initialized: function() {
-                captureInterval = setInterval(this.captureImage, this.config.captureIntervalSeconds * 1000);
-	},
-
 	calculateBrightness: function(e) {
 		self.ctx.drawImage(self.imageWrapper, 0, 0);
 		var imageData = self.ctx.getImageData(0, 0, self.canvasWrapper.width, self.canvasWrapper.height);
@@ -74,6 +70,12 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		self = this;
 		if (self.config.autoBrightnessMinValueViaRemoteControl && self.config.autoBrightnessMaxValueViaRemoteControl && self.config.autoBrightnessMinValueViaRemoteControl > self.config.autoBrightnessMaxValueViaRemoteControl)
 			self.config.autoBrightnessMinValueViaRemoteControl = self.config.autoBrightnessMaxValueViaRemoteControl = null;
+
+		if (this.config.autoBrightnessMinValueViaRemoteControl && this.config.autoBrightnessMinValueViaRemoteControl < 10)
+			this.config.autoBrightnessMinValueViaRemoteControl = null;
+
+		if (this.config.autoBrightnessMaxValueViaRemoteControl && this.config.autoBrightnessMaxValueViaRemoteControl > 200)
+			this.config.autoBrightnessMaxValueViaRemoteControl = null;
 
 		this.imageWrapper = document.createElement("img");
 		this.canvasWrapper = document.createElement("canvas");
