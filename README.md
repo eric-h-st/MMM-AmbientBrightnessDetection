@@ -7,7 +7,7 @@ Up next: support the PI-Camera module.
 
 ## Installation
 ````
-cd ~/MagicMirror
+cd ~/MagicMirror/modules
 git clone https://github.com/eric-h-st/MMM-AmbientBrightnessDetection.git
 cd MMM-AmbientBrightnessDetection
 npm install
