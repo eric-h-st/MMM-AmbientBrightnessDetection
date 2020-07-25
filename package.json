@@ -20,6 +20,6 @@
     "url": "https://github.com/eric-h-st/MMM-AmbientLights/issues"
   },
   "dependencies": {
-    "opencv": "latest"
+    "node-webcam": "latest"
   }
 }
