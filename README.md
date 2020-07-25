@@ -73,6 +73,15 @@ The following properties can be configured:
   </tbody>
 </table>
 
+## Developer Notes
+<ul>
+	<li>This module broadcasts a `AMBIENT_BRIGHTNESS_DETECTED` notification with the payload of an integer representing the percentage of ambient light detected. You could use it to perform various actions. 
+	</li>
+	<li>This module also broadcasts a `REMOTE_ACTION` notification (to be used by the <b>MMM-RemoteControl</b> module) with the payload of an integer between 10-200 representing coresponding to the percentage of ambient light detected within the specific range supported by that module. 
+	</li>
+</ul>
+
+
 ## Dependencies
 - [node-webcam](https://www.npmjs.com/package/node-webcam) (installed via `npm install`)
 - MMM-RemoteControl (optional) for auto-brightness 
