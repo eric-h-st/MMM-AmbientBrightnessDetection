@@ -11,7 +11,8 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		captureWidth: 640,
 		captureHeight: 480,
 		captureIntervalSeconds: 60,
-		autoSetBrightnessViaRemoteControl: true
+		autoSetBrightnessViaRemoteControl: true,
+		autoBrightnessFactorViaRemoteControl: null
   	},
 	imageWrapper : null,
 	canvasWrapper: null,
@@ -50,10 +51,17 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		Log.info("Brightness detected at: " + self.brightness + "%");
 
 		self.sendNotification("AMBIENT_BRIGHTNESS_DETECTED", self.brightness);
-		if (self.config.autoSetBrightnessViaRemoteControl)
-			self.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: self.brightness * 200 / 100 });
 
-		Log.info("Brightness calculated: " + self.brightness);
+		if (self.config.autoSetBrightnessViaRemoteControl) {
+			var autoBrightnessViaRemoteControl = self.brightness * 200 / 100;
+			if (self.config.autoBrightnessFactorViaRemoteControl && self.config.autoBrightnessFactorViaRemoteControl > 0 && self.config.autoBrightnessFactorViaRemoteControl <= 100) {
+				if (autoBrightnessViaRemoteControl < 50)
+					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl + autoBrightnessViaRemoteControl * self.config.autoBrightnessFactorViaRemoteControl / 100;
+				else if (autoBrightnessViaRemoteControl > 150)
+					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl - (200-autoBrightnessViaRemoteControl) * self.config.autoBrightnessFactorViaRemoteControl / 100;
+			}
+			self.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: autoBrightnessViaRemoteControl });
+		}
 	},
 
 	start: function () {
