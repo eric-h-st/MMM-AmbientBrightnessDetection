@@ -1,6 +1,9 @@
 # MMM-AmbientBrightnessDetection
 Extension for the [MagicMirror](https://github.com/MichMich/MagicMirror). 
 Monitors the room's ambient brightness by sampling images from the attached Webcam and calculating the brightness in the image. 
+As of now, this has been tested with a Logitech webcam, but should work with any PI compatibale webcam.
+
+Up next: support the PI-Camera module. 
 
 ## Installation
 ````
