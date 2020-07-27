@@ -1,13 +1,20 @@
 # MMM-AmbientBrightnessDetection
 Extension for the [MagicMirror](https://github.com/MichMich/MagicMirror). 
-Monitors the room's ambient brightness by sampling images from the attached Webcam and calculating the brightness in the image. 
-As of now, this has been tested with a Logitech webcam, but should work with any PI compatibale webcam.
+Monitors the room's ambient brightness by sampling images from the attached camera and calculating the brightness in the image. 
+Supports automatic brightsness adjutment via <i>MMM-RemoteControl</i>.
+
+**Notes:**
+* As of now, this has been tested with a Logitech webcam, but should work with any PI compatibale webcam.
+* This module does not have to be visible to operate (send notifications) and update the screen brightness. If visible, will show and optionally animate brightness changes. 
 
 **Next to be added:** 
 
 * CEC support to change the actual brightness of the monitor, if supported.
 * PI camera module support
 
+## Screenshots
+
+![](screenshots/screenshot.png)
 
 ## Installation
 ````
@@ -24,6 +31,7 @@ To use this module, add it to the modules array in the `config/config.js` file:
 modules: [
 	{
 		module: 'MMM-AmbientBrightnessDetection',
+		position: "fullscreen_above", // Optional, but if used- it is recommended to use "fullscreen_above" only
 		config: {
 			// See 'Configuration options' for more information.
 		}
@@ -68,6 +76,13 @@ The following properties can be configured:
 			</td>
 		</tr>
 		<tr>
+			<td><code>animateBrightnessChange</code></td>
+			<td>When visible, should brightness changes be animated?
+				<br><b>Possible values:</b> <code>boolean</code>
+				<br><b>Default value:</b> <code>true</code>
+			</td>
+		</tr>	
+		<tr>
 			<td><code>autoSetBrightnessViaRemoteControl</code></td>
 			<td>Should <b>MMM-RemoteControl</b> be notified with a <i>REMOTE_ACTION</i> to set the brightness according to the ambient light in the room?<br>
 				<br><b>Possible values:</b> <code>boolean</code>
@@ -95,7 +110,7 @@ The following properties can be configured:
 				<br><b>Possible values:</b> <code>10 > int < 200</code> or <code>null</code> for none
 				<br><b>Default value:</b> <code>30</code>
 			</td>
-		</tr>		
+		</tr>
   </tbody>
 </table>
 
