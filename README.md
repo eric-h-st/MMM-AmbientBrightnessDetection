@@ -9,7 +9,6 @@ Supports automatic brightsness adjutment via <i>MMM-RemoteControl</i>.
 
 **Next to be added:** 
 
-* CEC support to change the actual brightness of the monitor, if supported.
 * PI camera module support
 
 ## Screenshots
