@@ -1,0 +1,48 @@
+@import "font-awesome.css";
+
+.MMM-AmbientBrightnessDetection {
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+.detectedBrightness {
+    visibility: hidden;
+    position: relative;
+    z-index: 100;
+    background-color: dimgray;
+    max-width: 100%;
+    width: 100%;
+    border-radius: 13px;
+    padding: 3px;
+}
+
+.detectedBrightnessGauge {
+    background-color: 	#80def3b2;
+    height: 16px;
+    border-radius: 9px;
+}
+
+.detectedBrightnessIcon {
+    position: absolute;
+    color: rgb(212, 211, 156);
+    top: 1;
+    left: 50%;
+    font-size: 17px;
+    z-index: -100;
+}
+
+.brightnessChangeAnimation {
+    animation-duration: 3s;
+    animation-name: widthAnimation;
+}
+
+@keyframes widthAnimation {
+    from {
+        width: var(--from, 0%);
+    }
+    to {
+        width: var(--to, 100%);
+    }
+}

@@ -14,18 +14,51 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		autoSetBrightnessViaRemoteControl: true,
 		autoBrightnessLowerFactorViaRemoteControl: null,
 		autoBrightnessMinValueViaRemoteControl: 30,
-		autoBrightnessMaxValueViaRemoteControl: null
+		autoBrightnessMaxValueViaRemoteControl: null,
+		animateBrightnessChange: true		
   	},
 	imageWrapper : null,
 	canvasWrapper: null,
+	htmlElementWrapper: null,
+	brightnessLevelWrapper: null,
 	ctx: null,
-	brightness: -1,
+	brightness: 100,
+
+	getStyles: function() {
+		return [
+			"MMM-AmbientBrightnessDetection.css"
+		];
+	},
+
+	getDom: function() {
+		this.htmlElementWrapper = document.createElement("div");
+		this.htmlElementWrapper.className = "detectedBrightness";
+
+		this.brightnessLevelWrapper = document.createElement("div");
+		this.brightnessLevelWrapper.className = "detectedBrightnessGauge";
+		this.brightnessLevelWrapper.addEventListener("animationend", this.displayNewBrightness);
+
+		var lWrapper = document.createElement("i");
+		lWrapper.className = "fa fa-lightbulb-o detectedBrightnessIcon";
+		this.htmlElementWrapper.appendChild(lWrapper);
+
+		this.brightnessLevelWrapper.style.width = this.brightness + "%";
+		this.htmlElementWrapper.appendChild(this.brightnessLevelWrapper);
+
+		return this.htmlElementWrapper;
+	},
 
   	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
-		if (notification === "DATA") {
-			this.imageWrapper.src = payload;
-		}
+		switch (notification) {
+			case "DATA":
+				this.imageWrapper.src = payload;
+			break;
+			case "DATA_FILENAME":
+				this.imageWrapper.src = this.file(payload);
+			default: 
+			break;
+		}		
 	},
 
 	notificationReceived: function (notification, payload) {
@@ -44,11 +77,33 @@ Module.register('MMM-AmbientBrightnessDetection',{
 
 			colorSum += (r + g + b) / 3;
 		}
+		
+		var oldBrightness = self.brightness;
 		self.brightness = Math.floor(colorSum / (self.canvasWrapper.width * self.canvasWrapper.height) / 256 * 100);
-		Log.info("Brightness detected at: " + self.brightness + "%");
+		if (oldBrightness != self.brightness) {
+			Log.info("Brightness detected at: " + self.brightness + "%");
 
-		self.sendNotification("AMBIENT_BRIGHTNESS_DETECTED", self.brightness);
+			self.sendNotification("AMBIENT_BRIGHTNESS_DETECTED", self.brightness);		
 
+			if (self.htmlElementWrapper) {
+				self.htmlElementWrapper.style.visibility = "visible";
+				if (self.config.animateBrightnessChange) {
+					self.brightnessLevelWrapper.style.setProperty("--from", oldBrightness + "%");
+					self.brightnessLevelWrapper.style.setProperty("--to", self.brightness + "%");
+
+					self.brightnessLevelWrapper.classList.add('brightnessChangeAnimation');
+				}
+				else {
+					self.displayNewBrightness();
+				}
+			}
+			else {
+				self.notifyRemoteControl();
+			}
+		}
+	},
+
+	notifyRemoteControl: function() {
 		if (self.config.autoSetBrightnessViaRemoteControl) {
 			var autoBrightnessViaRemoteControl = self.brightness * 190 / 100;
 			if (self.config.autoBrightnessFactorViaRemoteControl && self.config.autoBrightnessFactorViaRemoteControl > 0 && self.config.autoBrightnessFactorViaRemoteControl <= 100) {
@@ -61,8 +116,15 @@ Module.register('MMM-AmbientBrightnessDetection',{
 				autoBrightnessViaRemoteControl = Math.max(self.config.autoBrightnessMinValueViaRemoteControl, autoBrightnessViaRemoteControl);
 			if (self.config.autoBrightnessMaxValueViaRemoteControl)
 				autoBrightnessViaRemoteControl = Math.min(self.config.autoBrightnessMaxValueViaRemoteControl, autoBrightnessViaRemoteControl);
+
 			self.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: 10 + autoBrightnessViaRemoteControl });
 		}
+	},
+
+	displayNewBrightness: function() {
+		self.brightnessLevelWrapper.style.width = self.brightness + "%";
+		self.updateDom(10000);
+		self.notifyRemoteControl();
 	},
 
 	start: function () {
@@ -92,7 +154,11 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		this.sendSocketNotification('CONFIG', this.config);
 	},
 
-	stop: function() {
-		this.sendSocketNotification('STOP', this.config);
+	suspend: function() {
+		this.sendSocketNotification('SUSPEND', this.config);
+	},
+
+	resume: function() {
+		this.sendSocketNotification('RESUME', this.config);
 	}
 });

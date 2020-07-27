@@ -9,6 +9,7 @@
 
 const NodeHelper = require('node_helper');
 const NodeWebcam = require( 'node-webcam');
+var fs = require('fs');
 var self = null;
 
 module.exports = NodeHelper.create({
@@ -32,18 +33,27 @@ module.exports = NodeHelper.create({
 				if (!this.started) {
 					this.config = payload;
 					this.prepare();
+
 					this.started = true;
 					this.log("Started.");
+
 					if (this.config.captureIntervalSeconds > 0) {
-						this.log("Setting interval to: " + this.config.captureIntervalSeconds * 1000);
+						this.log("Setting brightness detection interval to: " + this.config.captureIntervalSeconds * 1000);
 						this.snapshotInterval = setInterval(this.snapshot, this.config.captureIntervalSeconds * 1000);
 					}
+
 					this.snapshot();
 				}
 				break;
-			case "STOP": {
+			case "SUSPEND": {
+				this.log("Suspending brightness detection");
 				clearInterval(this.snapshotInterval);
 				break;
+			}
+			case "RESUME": {
+				this.log("Resuming brightness detection");
+				this.snapshotInterval = setInterval(this.snapshot, this.config.captureIntervalSeconds * 1000);
+			break;
 			}
 			default: ;
 		}
@@ -72,19 +82,14 @@ module.exports = NodeHelper.create({
         self.camera.capture(self.name, (err, data) => {
 			if (!err) {
 				self.sendSocketNotification("DATA", data);
+				fs.unlink(self.name + ".jpg", (err) => {
+					if (err)
+						self.log("Failed to delete capture file: " + self.name + ".jpg, " + err);
+				});				
 			}
 			else {
 				self.log(err);
 			}
 		});
 	},
-
-	notify: function(err, data) {
-		if (!err) {
-			self.sendSocketNotification("DATA", data);
-		}
-		else {
-			self.log(err);
-		}
-	}
 });
