@@ -1,23 +1,24 @@
 {
-  "name": "Magic-Mirror-Module-Ambient-Lights",
+  "name": "Magic-Mirror-Module-Ambient-Brightness-Detection",
   "version": "1.0.0",
-  "description": "Ambient lights detection module for the Magic Mirror.",
+  "description": "Ambient brightness detection and auto-brightness module for the Magic Mirror.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eric-h-st/MMM-AmbientLights"
+    "url": "git+https://github.com/eric-h-st/MMM-AmbientBrightnessDetection"
   },
   "keywords": [
     "magic mirror",
     "smart mirror",
-    "Ambient Lights",
+    "Ambient Brightness",
     "module",
     "ambient",
+    "brightness",
     "camera"
   ],
   "author": "Eric H.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/eric-h-st/MMM-AmbientLights/issues"
+    "url": "https://github.com/eric-h-st/MMM-AmbientBrightnessDetection/issues"
   },
   "dependencies": {
     "node-webcam": "latest"
