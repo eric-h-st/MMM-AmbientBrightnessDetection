@@ -4,12 +4,8 @@ Monitors the room's ambient brightness by sampling images from the attached came
 Supports automatic brightsness adjutment via <i>MMM-RemoteControl</i>.
 
 **Notes:**
-* As of now, this has been tested with a Logitech webcam, but should work with any PI compatibale webcam.
+* As of now, this has been tested with the PI camera module and a USB Logitech webcam, but should work with any PI compatibale webcam.
 * This module does not have to be visible to operate (send notifications) and update the screen brightness. If visible, will show and optionally animate brightness changes. 
-
-**Next to be added:** 
-
-* PI camera module support
 
 ## Screenshots
 
@@ -51,6 +47,14 @@ The following properties can be configured:
 		</tr>
 	<thead>
 	<tbody>
+		<tr>
+			<td><code>device</code></td>
+			<td>Camera device name and path, in case more than one camera is connected to the PI<br>
+				For example: <code>/dev/device0</code>
+				<br><b>Possible values:</b> <code>string</code>, or <code>null</code> to select the default camera. 
+				<br><b>Default value:</b> <code>null</code>
+			</td>
+		</tr>
 		<tr>
 			<td><code>captureWidth</code></td>
 			<td>Width, in pixels, of the image to capture in order to calculate the brightness<br>
