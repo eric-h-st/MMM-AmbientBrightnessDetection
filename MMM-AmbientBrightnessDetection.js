@@ -5,9 +5,9 @@
 * MIT Licensed.
 */
 
-var self = null;
 Module.register('MMM-AmbientBrightnessDetection',{
 	defaults: {
+		device: null,
 		captureWidth: 640,
 		captureHeight: 480,
 		captureIntervalSeconds: 60,
@@ -65,8 +65,8 @@ Module.register('MMM-AmbientBrightnessDetection',{
 	},
 
 	calculateBrightness: function(e) {
-		self.ctx.drawImage(self.imageWrapper, 0, 0);
-		var imageData = self.ctx.getImageData(0, 0, self.canvasWrapper.width, self.canvasWrapper.height);
+		this.ctx.drawImage(this.imageWrapper, 0, 0);
+		var imageData = this.ctx.getImageData(0, 0, this.canvasWrapper.width, this.canvasWrapper.height);
 		var data = imageData.data;
 		var i, len, r,g,b, colorSum = 0;
 
@@ -78,60 +78,59 @@ Module.register('MMM-AmbientBrightnessDetection',{
 			colorSum += (r + g + b) / 3;
 		}
 		
-		var oldBrightness = self.brightness;
-		self.brightness = Math.floor(colorSum / (self.canvasWrapper.width * self.canvasWrapper.height) / 256 * 100);
-		if (oldBrightness != self.brightness) {
-			Log.info("Brightness detected at: " + self.brightness + "%");
+		var oldBrightness = this.brightness;
+		this.brightness = Math.floor(colorSum / (this.canvasWrapper.width * this.canvasWrapper.height) / 256 * 100);
+		if (oldBrightness != this.brightness) {
+			Log.info("Brightness detected at: " + this.brightness + "%");
 
-			self.sendNotification("AMBIENT_BRIGHTNESS_DETECTED", self.brightness);		
+			this.sendNotification("AMBIENT_BRIGHTNESS_DETECTED", this.brightness);		
 
-			if (self.htmlElementWrapper) {
-				self.htmlElementWrapper.style.visibility = "visible";
-				if (self.config.animateBrightnessChange) {
-					self.brightnessLevelWrapper.style.setProperty("--from", oldBrightness + "%");
-					self.brightnessLevelWrapper.style.setProperty("--to", self.brightness + "%");
+			if (this.htmlElementWrapper) {
+				this.htmlElementWrapper.style.visibility = "visible";
+				if (this.config.animateBrightnessChange) {
+					this.brightnessLevelWrapper.style.setProperty("--from", oldBrightness + "%");
+					this.brightnessLevelWrapper.style.setProperty("--to", this.brightness + "%");
 
-					self.brightnessLevelWrapper.classList.add('brightnessChangeAnimation');
+					this.brightnessLevelWrapper.classList.add('brightnessChangeAnimation');
 				}
 				else {
-					self.displayNewBrightness();
+					this.displayNewBrightness();
 				}
 			}
 			else {
-				self.notifyRemoteControl();
+				this.notifyRemoteControl();
 			}
 		}
 	},
 
 	notifyRemoteControl: function() {
-		if (self.config.autoSetBrightnessViaRemoteControl) {
-			var autoBrightnessViaRemoteControl = self.brightness * 190 / 100;
-			if (self.config.autoBrightnessFactorViaRemoteControl && self.config.autoBrightnessFactorViaRemoteControl > 0 && self.config.autoBrightnessFactorViaRemoteControl <= 100) {
+		if (this.config.autoSetBrightnessViaRemoteControl) {
+			var autoBrightnessViaRemoteControl = this.brightness * 190 / 100;
+			if (this.config.autoBrightnessFactorViaRemoteControl && this.config.autoBrightnessFactorViaRemoteControl > 0 && this.config.autoBrightnessFactorViaRemoteControl <= 100) {
 				if (autoBrightnessViaRemoteControl < 40)
-					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl + autoBrightnessViaRemoteControl * self.config.autoBrightnessFactorViaRemoteControl / 100;
+					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl + autoBrightnessViaRemoteControl * this.config.autoBrightnessFactorViaRemoteControl / 100;
 				else if (autoBrightnessViaRemoteControl > 160)
-					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl - (190-autoBrightnessViaRemoteControl) * self.config.autoBrightnessFactorViaRemoteControl / 100;
+					autoBrightnessViaRemoteControl = autoBrightnessViaRemoteControl - (190-autoBrightnessViaRemoteControl) * this.config.autoBrightnessFactorViaRemoteControl / 100;
 			}
-			if (self.config.autoBrightnessMinValueViaRemoteControl)
-				autoBrightnessViaRemoteControl = Math.max(self.config.autoBrightnessMinValueViaRemoteControl, autoBrightnessViaRemoteControl);
-			if (self.config.autoBrightnessMaxValueViaRemoteControl)
-				autoBrightnessViaRemoteControl = Math.min(self.config.autoBrightnessMaxValueViaRemoteControl, autoBrightnessViaRemoteControl);
+			if (this.config.autoBrightnessMinValueViaRemoteControl)
+				autoBrightnessViaRemoteControl = Math.max(this.config.autoBrightnessMinValueViaRemoteControl, autoBrightnessViaRemoteControl);
+			if (this.config.autoBrightnessMaxValueViaRemoteControl)
+				autoBrightnessViaRemoteControl = Math.min(this.config.autoBrightnessMaxValueViaRemoteControl, autoBrightnessViaRemoteControl);
 
-			self.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: 10 + autoBrightnessViaRemoteControl });
+			this.sendNotification("REMOTE_ACTION", {action: 'BRIGHTNESS', value: 10 + autoBrightnessViaRemoteControl });
 		}
 	},
 
 	displayNewBrightness: function() {
-		self.brightnessLevelWrapper.style.width = self.brightness + "%";
-		self.updateDom(10000);
-		self.notifyRemoteControl();
+		this.brightnessLevelWrapper.style.width = this.brightness + "%";
+		this.updateDom(10000);
+		this.notifyRemoteControl();
 	},
 
 	start: function () {
 		Log.info("Starting module: " + this.name);
-		self = this;
-		if (self.config.autoBrightnessMinValueViaRemoteControl && self.config.autoBrightnessMaxValueViaRemoteControl && self.config.autoBrightnessMinValueViaRemoteControl > self.config.autoBrightnessMaxValueViaRemoteControl)
-			self.config.autoBrightnessMinValueViaRemoteControl = self.config.autoBrightnessMaxValueViaRemoteControl = null;
+		if (this.config.autoBrightnessMinValueViaRemoteControl && this.config.autoBrightnessMaxValueViaRemoteControl && this.config.autoBrightnessMinValueViaRemoteControl > this.config.autoBrightnessMaxValueViaRemoteControl)
+			this.config.autoBrightnessMinValueViaRemoteControl = this.config.autoBrightnessMaxValueViaRemoteControl = null;
 
 		if (this.config.autoBrightnessMinValueViaRemoteControl && this.config.autoBrightnessMinValueViaRemoteControl < 10)
 			this.config.autoBrightnessMinValueViaRemoteControl = null;
@@ -147,9 +146,9 @@ Module.register('MMM-AmbientBrightnessDetection',{
 		this.canvasWrapper.width = this.config.captureWidth;
 		this.canvasWrapper.height = this.config.captureHeight;
 
-		this.ctx = self.canvasWrapper.getContext('2d');
+		this.ctx = this.canvasWrapper.getContext('2d');
 
-		this.imageWrapper.addEventListener('load', this.calculateBrightness);
+		this.imageWrapper.addEventListener('load', this.calculateBrightness.bind(this));
 
 		this.sendSocketNotification('CONFIG', this.config);
 	},
