@@ -36,7 +36,7 @@ Module.register('MMM-AmbientBrightnessDetection',{
 
 		this.brightnessLevelWrapper = document.createElement("div");
 		this.brightnessLevelWrapper.className = "detectedBrightnessGauge";
-		this.brightnessLevelWrapper.addEventListener("animationend", this.displayNewBrightness);
+		this.brightnessLevelWrapper.addEventListener("animationend", this.displayNewBrightness.bind(this));
 
 		var lWrapper = document.createElement("i");
 		lWrapper.className = "fa fa-lightbulb-o detectedBrightnessIcon";
